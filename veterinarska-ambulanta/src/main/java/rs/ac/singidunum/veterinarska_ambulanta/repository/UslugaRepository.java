@@ -10,9 +10,16 @@ package rs.ac.singidunum.veterinarska_ambulanta.repository;
  * @author Radomir
  */
 
-import org.springframework.data.jpa.repository.JpaRepository; 
+import org.springframework.data.jpa.repository.JpaRepository;
 import rs.ac.singidunum.veterinarska_ambulanta.model.Usluga; 
 
-public interface UslugaRepository {
-
+public interface UslugaRepository extends JpaRepository<Usluga, Long>{
+	@org.springframework.data.jpa.repository.Query(""" 
+	        SELECT u 
+	        FROM Pregled p 
+	        JOIN p.usluge u 
+	        GROUP BY u 
+	        ORDER BY COUNT(p) DESC 
+			""")
+	java.util.List<Usluga> findNajcesceKorisceneUsluge();
 }

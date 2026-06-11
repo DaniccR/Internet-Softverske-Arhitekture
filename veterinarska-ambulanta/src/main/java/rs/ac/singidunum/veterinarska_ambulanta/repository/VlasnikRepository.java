@@ -10,9 +10,9 @@ package rs.ac.singidunum.veterinarska_ambulanta.repository;
  * @author Radomir
  */
 
-import org.springframework.data.jpa.repository.JpaRepository; 
+import org.springframework.data.jpa.repository.JpaRepository;
 import rs.ac.singidunum.veterinarska_ambulanta.model.Vlasnik; 
 
-public interface VlasnikRepository {
+public interface VlasnikRepository extends JpaRepository<Vlasnik, Long>{
 
 }

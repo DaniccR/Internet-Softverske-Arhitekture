@@ -57,8 +57,8 @@ public class Ljubimac {
 	public String getBrojMikrocipa() {
 		return brojMikrocipa;
 	}
-
-	public void setBrojMirocipa(String brojMikrocipa) {
+	
+	public void setBrojMikrocipa(String brojMikrocipa) {
 		this.brojMikrocipa = brojMikrocipa;
 	}
 

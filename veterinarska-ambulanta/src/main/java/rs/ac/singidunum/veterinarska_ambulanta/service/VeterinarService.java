@@ -18,9 +18,13 @@ import rs.ac.singidunum.veterinarska_ambulanta.repository.VeterinarRepository;
 @Service
 public class VeterinarService {
 	private final VeterinarRepository veterinarRepository; 
-	 
-    public VeterinarService(VeterinarRepository veterinarRepository) { 
+	private final rs.ac.singidunum.veterinarska_ambulanta.repository.PregledRepository pregledRepository;
+
+    // AŽURIRAJ KONSTRUKTOR DA PRIMA I PregledRepository
+    public VeterinarService(VeterinarRepository veterinarRepository, 
+                            rs.ac.singidunum.veterinarska_ambulanta.repository.PregledRepository pregledRepository) { 
         this.veterinarRepository = veterinarRepository; 
+        this.pregledRepository = pregledRepository;
     } 
  
     public List<Veterinar> findAll() { 
@@ -47,5 +51,15 @@ public class VeterinarService {
     public void deleteById(Long id) { 
         Veterinar veterinar = findById(id); 
         veterinarRepository.delete(veterinar); 
-    } 
+    }
+    
+    public Veterinar findNajaktivnijiVeteriser() { 
+        List<Veterinar> veterinari = pregledRepository.findNajaktivnijiVeterinari(); 
+        
+        if (veterinari.isEmpty()) { 
+            throw new RuntimeException("Ne postoje završeni pregledi."); 
+        } 
+        
+        return veterinari.get(0); 
+    }
 }

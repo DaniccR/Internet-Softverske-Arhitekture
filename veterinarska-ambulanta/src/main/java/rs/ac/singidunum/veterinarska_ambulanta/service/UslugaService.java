@@ -48,4 +48,14 @@ public class UslugaService {
         Usluga usluga = findById(id); 
         uslugaRepository.delete(usluga); 
     } 
+    
+    public Usluga findNajcescaUsluga() { 
+        List<Usluga> usluge = uslugaRepository.findNajcesceKorisceneUsluge(); 
+        
+        if (usluge.isEmpty()) { 
+            throw new RuntimeException("Ne postoji nijedna korišćena usluga."); 
+        } 
+        
+        return usluge.get(0); 
+    }
 }
