@@ -1,0 +1,42 @@
+<!DOCTYPE html> 
+<html xmlns:th="http://www.thymeleaf.org"> 
+<head> 
+    <meta charset="UTF-8">
+    <title>Veterinari</title> 
+    <link rel="stylesheet" th:href="@{/css/style.css}"> 
+</head> 
+<body> 
+    <a th:href="@{/web}">Pocetna</a> 
+    <h1>Veterinari</h1> 
+ 
+    <form th:action="${veterinar.id == null} ? @{/web/veterinari} : @{/web/veterinari/update/{id}(id=${veterinar.id})}" 
+          th:object="${veterinar}" method="post"> 
+        <input type="text" th:field="*{ime}" placeholder="Ime" required> 
+        <input type="text" th:field="*{prezime}" placeholder="Prezime" required> 
+        <input type="text" th:field="*{specijalizacija}" placeholder="Specijalizacija"> 
+        <button type="submit">Sacuvaj</button> 
+    </form> 
+ 
+    <table> 
+        <tr>
+            <th>ID</th>
+            <th>Ime</th>
+            <th>Prezime</th>
+            <th>Specijalizacija</th>
+            <th>Akcije</th>
+        </tr> 
+        <tr th:each="vet : ${veterinari}"> 
+            <td th:text="${vet.id}"></td> 
+            <td th:text="${vet.ime}"></td> 
+            <td th:text="${vet.prezime}"></td> 
+            <td th:text="${vet.specijalizacija}"></td> 
+            <td> 
+                <a th:href="@{/web/veterinari/edit/{id}(id=${vet.id})}">Izmeni</a> 
+                <form th:action="@{/web/veterinari/delete/{id}(id=${vet.id})}" method="post" style="display:inline"> 
+                    <button type="submit" onclick="return confirm('Da li ste sigurni?')">Obrisi</button> 
+                </form> 
+            </td> 
+        </tr> 
+    </table> 
+</body> 
+</html>

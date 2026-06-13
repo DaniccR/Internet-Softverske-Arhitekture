@@ -11,7 +11,10 @@ package rs.ac.singidunum.veterinarska_ambulanta.service;
  */
 
 import java.util.List; 
-import org.springframework.stereotype.Service; 
+import org.springframework.stereotype.Service;
+
+import rs.ac.singidunum.veterinarska_ambulanta.exception.BusinessException;
+import rs.ac.singidunum.veterinarska_ambulanta.exception.ResourceNotFoundException;
 import rs.ac.singidunum.veterinarska_ambulanta.model.Usluga; 
 import rs.ac.singidunum.veterinarska_ambulanta.repository.UslugaRepository; 
 
@@ -29,7 +32,7 @@ public class UslugaService {
  
     public Usluga findById(Long id) { 
         return uslugaRepository.findById(id) 
-            .orElseThrow(() -> new RuntimeException("Usluga nije nadjen.")); 
+            .orElseThrow(() -> new ResourceNotFoundException("Usluga nije nadjena.")); 
     } 
  
     public Usluga save(Usluga usluga) { 
@@ -53,7 +56,7 @@ public class UslugaService {
         List<Usluga> usluge = uslugaRepository.findNajcesceKorisceneUsluge(); 
         
         if (usluge.isEmpty()) { 
-            throw new RuntimeException("Ne postoji nijedna korišćena usluga."); 
+            throw new BusinessException("Ne postoji nijedna koriscena usluga."); 
         } 
         
         return usluge.get(0); 

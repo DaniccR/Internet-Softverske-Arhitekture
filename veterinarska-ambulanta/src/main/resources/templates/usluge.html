@@ -1,0 +1,45 @@
+<!DOCTYPE html> 
+<html xmlns:th="http://www.thymeleaf.org"> 
+<head> 
+    <meta charset="UTF-8">
+    <title>Usluge</title> 
+    <link rel="stylesheet" th:href="@{/css/style.css}"> 
+</head> 
+<body> 
+    <a th:href="@{/web}">Pocetna</a> 
+    <h1>Usluge i Cenovnik</h1> 
+    
+    <a th:href="@{/web/usluge/najcesca}">Prikazi najcescu uslugu</a> 
+    <p th:if="${najcesca != null}">Najcesce birana usluga je: <strong th:text="${najcesca.naziv}"></strong></p> 
+ 
+    <form th:action="${usluga.id == null} ? @{/web/usluge} : @{/web/usluge/update/{id}(id=${usluga.id})}" 
+          th:object="${usluga}" method="post"> 
+        <input type="text" th:field="*{naziv}" placeholder="Naziv usluge" required> 
+        <input type="number" step="0.01" th:field="*{cena}" placeholder="Cena (RSD)" required> 
+        <textarea th:field="*{opis}" placeholder="Kratak opis usluge"></textarea> 
+        <button type="submit">Sacuvaj</button> 
+    </form> 
+ 
+    <table> 
+        <tr>
+            <th>ID</th>
+            <th>Naziv</th>
+            <th>Opis</th>
+            <th>Cena (RSD)</th>
+            <th>Akcije</th>
+        </tr> 
+        <tr th:each="u : ${usluge}"> 
+            <td th:text="${u.id}"></td> 
+            <td th:text="${u.naziv}"></td> 
+            <td th:text="${u.opis}"></td> 
+            <td th:text="${u.cena}"></td> 
+            <td> 
+                <a th:href="@{/web/usluge/edit/{id}(id=${u.id})}">Izmeni</a> 
+                <form th:action="@{/web/usluge/delete/{id}(id=${u.id})}" method="post" style="display:inline"> 
+                    <button type="submit" onclick="return confirm('Da li ste sigurni?')">Obrisi</button> 
+                </form> 
+            </td> 
+        </tr> 
+    </table> 
+</body> 
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html> 
+<html xmlns:th="http://www.thymeleaf.org"> 
+<head> 
+    <meta charset="UTF-8">
+    <title>Ljubimci</title> 
+    <link rel="stylesheet" th:href="@{/css/style.css}"> 
+</head> 
+<body> 
+    <a th:href="@{/web}">Pocetna</a> 
+    <h1>Ljubimci</h1> 
+ 
+    <form th:action="${ljubimac.id == null} ? @{/web/ljubimci} : @{/web/ljubimci/update/{id}(id=${ljubimac.id})}" 
+          th:object="${ljubimac}" method="post"> 
+        <input type="text" th:field="*{brojMikrocipa}" placeholder="Broj mikrocipa" required> 
+        <input type="text" th:field="*{vrsta}" placeholder="Vrsta (Pas, Macka...)" required> 
+        <input type="text" th:field="*{ime}" placeholder="Ime" required> 
+        <input type="number" th:field="*{godinaRodjenja}" placeholder="Godina rodjenja"> 
+        <select th:field="*{vlasnik.id}" required> 
+            <option value="">Izaberi vlasnika</option> 
+            <option th:each="v : ${vlasnici}" th:value="${v.id}" th:text="${v.ime + ' ' + v.prezime}"></option> 
+        </select> 
+        <button type="submit">Sacuvaj</button> 
+    </form> 
+ 
+    <table> 
+        <tr>
+            <th>ID</th>
+            <th>Mikrocip</th>
+            <th>Vrsta</th>
+            <th>Ime</th>
+            <th>Godina rodjenja</th>
+            <th>Vlasnik</th>
+            <th>Akcije</th>
+        </tr> 
+        <tr th:each="lj : ${ljubimci}"> 
+            <td th:text="${lj.id}"></td> 
+            <td th:text="${lj.brojMikrocipa}"></td> 
+            <td th:text="${lj.vrsta}"></td> 
+            <td th:text="${lj.ime}"></td> 
+            <td th:text="${lj.godinaRodjenja}"></td> 
+            <td th:text="${lj.vlasnik.ime + ' ' + lj.vlasnik.prezime}"></td> 
+            <td> 
+                <a th:href="@{/web/ljubimci/edit/{id}(id=${lj.id})}">Izmeni</a> 
+                <form th:action="@{/web/ljubimci/delete/{id}(id=${lj.id})}" method="post" style="display:inline">
+                    <button type="submit" onclick="return confirm('Da li ste sigurni?')">Obrisi</button> 
+                </form> 
+            </td> 
+        </tr> 
+    </table> 
+</body> 
+</html>

@@ -5,7 +5,7 @@
 package rs.ac.singidunum.veterinarska_ambulanta.exception;
 
 /**
- * TODO
+ * 
  * 
  * @author Radomir
  */
@@ -18,7 +18,6 @@ import jakarta.servlet.http.HttpServletRequest;
  
 @RestControllerAdvice 
 public class GlobalExceptionHandler {
-	// Presreće grešku kada ne nađemo podatak u bazi
     @ExceptionHandler(ResourceNotFoundException.class) 
     public ResponseEntity<ErrorResponse> handleResourceNotFound( 
     		ResourceNotFoundException ex, 
@@ -34,7 +33,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND); 
     } 
  
-    // Presreće grešku kada je prekršeno poslovno pravilo
     @ExceptionHandler(BusinessException.class) 
     public ResponseEntity<ErrorResponse> handleBusinessException( 
             BusinessException ex, 
@@ -50,7 +48,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST); 
     } 
  
-    // Presreće sve ostale (nepredviđene) greške sistema (status 500)
     @ExceptionHandler(Exception.class) 
     public ResponseEntity<ErrorResponse> handleGeneralException( 
             Exception ex, 
@@ -59,7 +56,7 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse( 
             HttpStatus.INTERNAL_SERVER_ERROR.value(), 
             "Internal Server Error", 
-            "Došlo je do neočekivane greške u sistemu.", 
+            "Doslo je do neocekivane greske u sistemu.", 
             request.getRequestURI() 
         ); 
  

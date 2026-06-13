@@ -1,0 +1,93 @@
+<!DOCTYPE html> 
+<html xmlns:th="http://www.thymeleaf.org"> 
+<head> 
+    <meta charset="UTF-8">
+    <title>Pregledi</title> 
+    <link rel="stylesheet" th:href="@{/css/style.css}"> 
+</head> 
+<body> 
+    <a th:href="@{/web}">Pocetna</a> 
+    <h1>Evidencija pregleda</h1> 
+ 
+    <form th:action="@{/web/pregledi}" th:object="${pregled}" method="post"> 
+        
+        <select th:field="*{ljubimac.id}" required> 
+            <option value="">Izaberi ljubimca</option> 
+            <option th:each="lj : ${ljubimci}" th:value="${lj.id}" th:text="${lj.brojMikrocipa + ' - ' + lj.ime + ' (' + lj.vrsta + ')'}"></option> 
+        </select> 
+        
+        <select th:field="*{veterinar.id}" required> 
+            <option value="">Izaberi nadleznog veterinara</option> 
+            <option th:each="v : ${veterinari}" th:value="${v.id}" th:text="${v.ime + ' ' + v.prezime + ' (' + v.specijalizacija + ')'}"></option> 
+        </select> 
+        
+        <br>
+        <textarea th:field="*{opisDijagnoze}" placeholder="Upisi opis dijagnoze / problema" rows="3" cols="50" required></textarea> 
+        <br>
+
+        <label>Dodaj usluge (drzati CTRL za vise):</label><br>
+        <select th:field="*{usluge}" multiple size="5" style="min-width: 250px;"> 
+            <option th:each="u : ${usluge}" th:value="${u.id}" th:text="${u.naziv + ' - ' + u.cena + ' RSD'}"></option> 
+        </select> 
+        <br>
+        <button type="submit" style="background-color: #4CAF50; color: white;">Otvori novi pregled</button> 
+    </form> 
+
+    <hr> 
+    
+    <form th:action="@{/web/pregledi/prihod}" method="get"> 
+        <label>Izracunaj prihod za period od:</label>
+        <input type="date" name="od" required>
+        <label>do:</label>
+        <input type="date" name="do" required> 
+        <button type="submit">Izracunaj</button> 
+    </form> 
+    
+    <p th:if="${prihod != null}" style="font-size: 18px; color: green;">
+        Ukupan ostvaren prihod u izabranom periodu iznosi: <strong th:text="${prihod} + ' RSD'"></strong>
+    </p> 
+ 
+    <table> 
+        <tr>
+            <th>ID</th>
+            <th>Ljubimac</th>
+            <th>Veterinar</th>
+            <th>Prijem</th>
+            <th>Zavrsetak</th>
+            <th>Status</th>
+            <th>Opis dijagnoze</th>
+            <th>Pruzene usluge</th>
+            <th>Akcije</th>
+        </tr> 
+        <tr th:each="p : ${pregledi}"> 
+            <td th:text="${p.id}"></td> 
+            <td th:text="${p.ljubimac.brojMikrocipa + ' - ' + p.ljubimac.ime}"></td> 
+            <td th:text="${p.veterinar.ime + ' ' + p.veterinar.prezime}"></td> 
+            <td th:text="${p.datumPrijema}"></td> 
+            <td th:text="${p.datumZavrsetka}"></td> 
+
+            <td th:text="${p.status}" 
+                th:style="${p.status.name() == 'U_TOKU'} ? 'color: orange; font-weight:bold;' : 
+                         (${p.status.name() == 'ZAVRSEN'} ? 'color: green; font-weight:bold;' : 'color: red; font-weight:bold;')">
+            </td> 
+            
+            <td th:text="${p.opisDijagnoze}"></td> 
+            
+            <td>
+                <span th:each="u : ${p.usluge}" th:text="${u.naziv + ', '}"></span>
+            </td> 
+
+            <td> 
+                <form th:if="${p.status.name() == 'U_TOKU'}" th:action="@{/web/pregledi/{id}/zavrsi(id=${p.id})}" method="post" style="display:inline"> 
+                    <button type="submit" onclick="return confirm('Da li zelite da uspesno zavrsite ovaj pregled?')" style="background-color: lightgreen;">Zavrsi</button> 
+                </form> 
+                <form th:if="${p.status.name() == 'U_TOKU'}" th:action="@{/web/pregledi/{id}/otkazi(id=${p.id})}" method="post" style="display:inline"> 
+                    <button type="submit" onclick="return confirm('Da li sigurno zelite da otkazete ovaj pregled?')" style="background-color: lightcoral;">Otkazi</button> 
+                </form> 
+                
+                <a th:href="@{/pregledi/{id}/ukupna-cena(id=${p.id})}" target="_blank" style="font-size: 12px;">Cena (JSON)</a> 
+            </td> 
+        </tr> 
+    </table> 
+</body> 
+</html>

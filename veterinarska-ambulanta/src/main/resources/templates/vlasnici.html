@@ -1,0 +1,45 @@
+<!DOCTYPE html> 
+<html xmlns:th="http://www.thymeleaf.org"> 
+<head> 
+    <meta charset="UTF-8">
+    <title>Vlasnici</title> 
+    <link rel="stylesheet" th:href="@{/css/style.css}"> 
+</head> 
+<body> 
+    <a th:href="@{/web}">Pocetna</a> 
+    <h1>Vlasnici</h1> 
+ 
+    <form th:action="${vlasnik.id == null} ? @{/web/vlasnici} : @{/web/vlasnici/update/{id}(id=${vlasnik.id})}" 
+          th:object="${vlasnik}" method="post"> 
+        <input type="text" th:field="*{ime}" placeholder="Ime" required> 
+        <input type="text" th:field="*{prezime}" placeholder="Prezime" required> 
+        <input type="text" th:field="*{telefon}" placeholder="Telefon"> 
+        <input type="email" th:field="*{email}" placeholder="Email"> 
+        <button type="submit">Sacuvaj</button> 
+    </form> 
+ 
+    <table> 
+        <tr>
+            <th>ID</th>
+            <th>Ime</th>
+            <th>Prezime</th>
+            <th>Telefon</th>
+            <th>Email</th>
+            <th>Akcije</th>
+        </tr> 
+        <tr th:each="v : ${vlasnici}"> 
+            <td th:text="${v.id}"></td> 
+            <td th:text="${v.ime}"></td> 
+            <td th:text="${v.prezime}"></td> 
+            <td th:text="${v.telefon}"></td> 
+            <td th:text="${v.email}"></td> 
+            <td> 
+                <a th:href="@{/web/vlasnici/edit/{id}(id=${v.id})}">Izmeni</a> 
+                <form th:action="@{/web/vlasnici/delete/{id}(id=${v.id})}" method="post" style="display:inline"> 
+                    <button type="submit" onclick="return confirm('Da li ste sigurni?')">Obrisi</button> 
+                </form> 
+            </td> 
+        </tr> 
+    </table> 
+</body> 
+</html>

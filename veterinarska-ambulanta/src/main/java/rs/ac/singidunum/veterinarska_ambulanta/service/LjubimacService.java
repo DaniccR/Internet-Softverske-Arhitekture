@@ -5,14 +5,16 @@
 package rs.ac.singidunum.veterinarska_ambulanta.service;
 
 /**
- * TODO
+ * 
  * 
  * @author Radomir
  */
 
 import java.util.List; 
 import org.springframework.stereotype.Service; 
-import rs.ac.singidunum.veterinarska_ambulanta.model.Vlasnik; 
+import rs.ac.singidunum.veterinarska_ambulanta.model.Vlasnik;
+import rs.ac.singidunum.veterinarska_ambulanta.exception.BusinessException;
+import rs.ac.singidunum.veterinarska_ambulanta.exception.ResourceNotFoundException;
 import rs.ac.singidunum.veterinarska_ambulanta.model.Ljubimac; 
 import rs.ac.singidunum.veterinarska_ambulanta.repository.VlasnikRepository; 
 import rs.ac.singidunum.veterinarska_ambulanta.repository.LjubimacRepository;
@@ -21,13 +23,13 @@ import rs.ac.singidunum.veterinarska_ambulanta.repository.LjubimacRepository;
 public class LjubimacService {
 	private final LjubimacRepository ljubimacRepository; 
     private final VlasnikRepository vlasnikRepository; 
-    private final rs.ac.singidunum.veterinarska_ambulanta.repository.PregledRepository pregledRepository; // DODATO
+    private final rs.ac.singidunum.veterinarska_ambulanta.repository.PregledRepository pregledRepository;
 
     public LjubimacService(LjubimacRepository ljubimacRepository, VlasnikRepository vlasnikRepository, 
                            rs.ac.singidunum.veterinarska_ambulanta.repository.PregledRepository pregledRepository) { 
         this.ljubimacRepository = ljubimacRepository; 
         this.vlasnikRepository = vlasnikRepository; 
-        this.pregledRepository = pregledRepository; // DODATO
+        this.pregledRepository = pregledRepository;
     } 
  
     public List<Ljubimac> findAll() { 
@@ -36,17 +38,17 @@ public class LjubimacService {
  
     public Ljubimac findById(Long id) { 
         return ljubimacRepository.findById(id) 
-            .orElseThrow(() -> new RuntimeException("Ljubimac nije pronađen.")); 
+            .orElseThrow(() -> new ResourceNotFoundException("Ljubimac nije nadjen.")); 
     } 
  
     public Ljubimac save(Ljubimac ljubimac) { 
         if (ljubimacRepository.existsByBrojMikrocipa(ljubimac.getBrojMikrocipa())) { 
-            throw new RuntimeException("Ljubimac sa ovim brojem mikročipa već postoji u sistemu."); 
+            throw new BusinessException("Ljubimac sa ovim brojem mikrocipa vec postoji u sistemu."); 
         } 
         
         Long vlasnikId = ljubimac.getVlasnik().getId(); 
         Vlasnik vlasnik = vlasnikRepository.findById(vlasnikId) 
-            .orElseThrow(() -> new RuntimeException("Vlasnik nije pronađen.")); 
+            .orElseThrow(() -> new ResourceNotFoundException("Vlasnik nije nadjen.")); 
         ljubimac.setVlasnik(vlasnik); 
         
         return ljubimacRepository.save(ljubimac); 
@@ -58,13 +60,13 @@ public class LjubimacService {
         ljubimacRepository.findByBrojMikrocipa(izmenjeniLjubimac.getBrojMikrocipa()) 
             .ifPresent(lj -> { 
                 if (!lj.getId().equals(id)) { 
-                    throw new RuntimeException("Ljubimac sa ovim brojem mikročipa već postoji u sistemu."); 
+                    throw new BusinessException("Ljubimac sa ovim brojem mikrocipa vec postoji u sistemu."); 
                 } 
             }); 
             
         Long vlasnikId = izmenjeniLjubimac.getVlasnik().getId(); 
         Vlasnik vlasnik = vlasnikRepository.findById(vlasnikId) 
-            .orElseThrow(() -> new RuntimeException("Vlasnik nije pronađen.")); 
+            .orElseThrow(() -> new ResourceNotFoundException("Vlasnik nije nadjen.")); 
             
         postojeciLjubimac.setBrojMikrocipa(izmenjeniLjubimac.getBrojMikrocipa()); 
         postojeciLjubimac.setVrsta(izmenjeniLjubimac.getVrsta()); 
@@ -82,7 +84,7 @@ public class LjubimacService {
             id, rs.ac.singidunum.veterinarska_ambulanta.model.StatusPregleda.U_TOKU);
             
         if (imaAktivanPregled) { 
-            throw new RuntimeException("Ljubimac ne može biti obrisan jer je trenutno na aktivnom pregledu."); 
+            throw new BusinessException("Ljubimac ne moze biti obrisan jer je trenutno na aktivnom pregledu."); 
         } 
         
         ljubimacRepository.delete(ljubimac); 

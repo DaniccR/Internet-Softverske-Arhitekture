@@ -11,7 +11,10 @@ package rs.ac.singidunum.veterinarska_ambulanta.service;
  */
 
 import java.util.List; 
-import org.springframework.stereotype.Service; 
+import org.springframework.stereotype.Service;
+
+import rs.ac.singidunum.veterinarska_ambulanta.exception.BusinessException;
+import rs.ac.singidunum.veterinarska_ambulanta.exception.ResourceNotFoundException;
 import rs.ac.singidunum.veterinarska_ambulanta.model.Veterinar; 
 import rs.ac.singidunum.veterinarska_ambulanta.repository.VeterinarRepository; 
 
@@ -20,7 +23,6 @@ public class VeterinarService {
 	private final VeterinarRepository veterinarRepository; 
 	private final rs.ac.singidunum.veterinarska_ambulanta.repository.PregledRepository pregledRepository;
 
-    // AŽURIRAJ KONSTRUKTOR DA PRIMA I PregledRepository
     public VeterinarService(VeterinarRepository veterinarRepository, 
                             rs.ac.singidunum.veterinarska_ambulanta.repository.PregledRepository pregledRepository) { 
         this.veterinarRepository = veterinarRepository; 
@@ -33,7 +35,7 @@ public class VeterinarService {
  
     public Veterinar findById(Long id) { 
         return veterinarRepository.findById(id) 
-            .orElseThrow(() -> new RuntimeException("Veterinar nije nadjen.")); 
+            .orElseThrow(() -> new ResourceNotFoundException("Veterinar nije nadjen.")); 
     } 
  
     public Veterinar save(Veterinar veterinar) { 
@@ -57,7 +59,7 @@ public class VeterinarService {
         List<Veterinar> veterinari = pregledRepository.findNajaktivnijiVeterinari(); 
         
         if (veterinari.isEmpty()) { 
-            throw new RuntimeException("Ne postoje završeni pregledi."); 
+            throw new BusinessException("Ne postoje zavrseni pregledi."); 
         } 
         
         return veterinari.get(0); 

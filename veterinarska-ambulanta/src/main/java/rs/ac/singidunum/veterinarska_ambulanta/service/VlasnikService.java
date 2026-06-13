@@ -11,7 +11,10 @@ package rs.ac.singidunum.veterinarska_ambulanta.service;
  */
 
 import java.util.List; 
-import org.springframework.stereotype.Service; 
+import org.springframework.stereotype.Service;
+
+import rs.ac.singidunum.veterinarska_ambulanta.exception.BusinessException;
+import rs.ac.singidunum.veterinarska_ambulanta.exception.ResourceNotFoundException;
 import rs.ac.singidunum.veterinarska_ambulanta.model.Vlasnik;
 import rs.ac.singidunum.veterinarska_ambulanta.repository.LjubimacRepository;
 import rs.ac.singidunum.veterinarska_ambulanta.repository.VlasnikRepository; 
@@ -20,21 +23,18 @@ import rs.ac.singidunum.veterinarska_ambulanta.repository.VlasnikRepository;
 public class VlasnikService {
 	
 	private final VlasnikRepository vlasnikRepository; 
-    private final LjubimacRepository ljubimacRepository; // DODATO
+    private final LjubimacRepository ljubimacRepository;
 
     public VlasnikService(VlasnikRepository vlasnikRepository, LjubimacRepository ljubimacRepository) { 
         this.vlasnikRepository = vlasnikRepository; 
-        this.ljubimacRepository = ljubimacRepository; // DODATO
+        this.ljubimacRepository = ljubimacRepository;
     } 
 
-    // Ostale metode (findAll, findById, save, update) ostaju iste...
-
-    // ZAMENI OVU METODU:
     public void deleteById(Long id) { 
         Vlasnik vlasnik = findById(id); 
         
         if (ljubimacRepository.existsByVlasnikId(id)) { 
-            throw new RuntimeException("Vlasnik ne može biti obrisan jer ima registrovane ljubimce u ambulanti."); 
+            throw new BusinessException("Vlasnik ne moze biti obrisan jer ima registrovane ljubimce u ambulanti."); 
         } 
         
         vlasnikRepository.delete(vlasnik); 
@@ -46,7 +46,7 @@ public class VlasnikService {
  
     public Vlasnik findById(Long id) { 
         return vlasnikRepository.findById(id) 
-            .orElseThrow(() -> new RuntimeException("Vlasnik nije nadjen.")); 
+            .orElseThrow(() -> new ResourceNotFoundException("Vlasnik nije nadjen.")); 
     } 
  
     public Vlasnik save(Vlasnik vlasnik) { 
