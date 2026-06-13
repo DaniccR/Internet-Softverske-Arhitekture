@@ -23,8 +23,7 @@ public class LjubimacService {
     private final VlasnikRepository vlasnikRepository; 
     private final rs.ac.singidunum.veterinarska_ambulanta.repository.PregledRepository pregledRepository; // DODATO
 
-    public LjubimacService(LjubimacRepository ljubimacRepository, 
-                           VlasnikRepository vlasnikRepository, 
+    public LjubimacService(LjubimacRepository ljubimacRepository, VlasnikRepository vlasnikRepository, 
                            rs.ac.singidunum.veterinarska_ambulanta.repository.PregledRepository pregledRepository) { 
         this.ljubimacRepository = ljubimacRepository; 
         this.vlasnikRepository = vlasnikRepository; 
